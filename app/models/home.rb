@@ -1,0 +1,5 @@
+class Home < ApplicationRecord
+
+
+
+end

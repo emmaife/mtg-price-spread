@@ -1,0 +1,16 @@
+<h1>Home#index</h1>
+
+<%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
+<% @sets.each do |set| %>
+	<%=check_box_tag "set[]", set.code, nil %><%=set.name%>
+<% end %>
+	<%= label_tag(:q, "Search for:") %>
+  <%= text_field_tag(:q) %>
+	<%= submit_tag "Search" %>
+
+<%end%>
+
+
+
+
+
