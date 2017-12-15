@@ -1,14 +1,23 @@
 class HomeController < ApplicationController
-require 'open-uri'
-#require 'mechanize'
+	require 'open-uri'
+	require 'mechanize'
+	require 'uri'
+	require 'net/http'
 
-helper_method :get_other_prices
- helper_method :get_tcg_price
+	helper_method :get_other_prices
+	helper_method :get_tcg_price
+	helper_method :get_cf_prices
+	helper_method :get_ck_prices
 
 
 
 	def index
 		@sets = MTG::Set.all
+		#@sets =  MTG::Set.where(expansion: 'core|expansion').all.select { |hash_element| hash_element.type !='promo' }
+		#@sets.each do |x|
+		#	str = str + x.name + "|"
+		#end
+		#str.chop!
   		if params[:q]
   			@cards = MTG::Card.where(name: params[:q]).all
   		else
@@ -50,36 +59,48 @@ helper_method :get_other_prices
 
 	
 	def get_tcg_price(c)
-		sleep 2
-
-		
+		require 'uri'
+		require 'net/http'
+		tcgPrice = ""
 		cardSet = c.set
 		cardSetName = MTG::Set.find(cardSet).name
 		cardName = c.name
+		sleep 2
+		url = URI("http://api.staging.tcgplayer.com/catalog/products?categoryId=1&limit=50&productName=" + cardName )
 
-		url = "https://www.mtggoldfish.com/price/" + cardSetName.strip.gsub(' ', '+').gsub(/'/,"") + '/' + cardName.strip.gsub(' ', '+').gsub(/'/,"").gsub(',',"").gsub('.','+').gsub(':', '').gsub('?', "%253F").gsub('!','').gsub('é', 'e')
+		http = Net::HTTP.new(url.host, url.port)
+
+		request = Net::HTTP::Get.new(url)
+		request['Authorization'] = "Bearer jzJHnEkCSmZiBoeLZ5Y9U6uaZtcpSqPN8WBzgNrKHXU8DkuGtdgBU93oBjgbNOUFScJQuwIwfrixCy03pATrRT7b6j14hnHTNtvQgY9MVwH7ugKo5Mro5IY8uxcwnfQmWYSCJSe5fr31mS5tUTycQbWvsKy-9Z_XrVyiN32QRawGFIKaFP-Ipazf181dxfl2_Wb2IwETFKipG-AmQOxLnaUKphv3q4iHMNQQd7UqTxkgUyHvLzXgL_Cuv8pz6PdsbLY20gSdiCbTj32a2Ih3xDnS61QPrSC9M_Md16s60a-waJfc1hnEpitdqcP41mGcCkz3NvOjkPojpyx6epkpQFmudMw"
+
+
+		response = http.request(request)
+		data = JSON.parse(response.body)
+		productId = data['results'][0]['productId']
 		
+		newUrl = URI("http://api.staging.tcgplayer.com/pricing/product/" + productId.to_s )
 
-		doc = Nokogiri::XML(open(url))
-		doc2 = doc.children[1].children[1]
-		puts doc2.children.length
-		@newPrice = 0
-		x = doc2.children[25]
- 		price = x.css('.price-box-price')[1].text
- 		puts price
- 		if price != "" 
- 			@newPrice = price
- 			
- 		end
- 		
- 		@newPrice
- 		sleep 5
+		newHttp = Net::HTTP.new(newUrl.host, newUrl.port)
+		newRequest = Net::HTTP::Get.new(newUrl)
+		newRequest['Authorization'] = "Bearer jzJHnEkCSmZiBoeLZ5Y9U6uaZtcpSqPN8WBzgNrKHXU8DkuGtdgBU93oBjgbNOUFScJQuwIwfrixCy03pATrRT7b6j14hnHTNtvQgY9MVwH7ugKo5Mro5IY8uxcwnfQmWYSCJSe5fr31mS5tUTycQbWvsKy-9Z_XrVyiN32QRawGFIKaFP-Ipazf181dxfl2_Wb2IwETFKipG-AmQOxLnaUKphv3q4iHMNQQd7UqTxkgUyHvLzXgL_Cuv8pz6PdsbLY20gSdiCbTj32a2Ih3xDnS61QPrSC9M_Md16s60a-waJfc1hnEpitdqcP41mGcCkz3NvOjkPojpyx6epkpQFmudMw"
+		newResponse = http.request(newRequest)
+		newData = JSON.parse(newResponse.body)
 
 
+		tcgPrice = newData['results'][0]['midPrice']
+		@tcgPrice = tcgPrice
+		puts "======" 
+		puts @tcgPrice
+		puts url 
+		@tcgPrice
 
- 	
-			
+
+
+
+ 
   	end
+
+
 
 
 
@@ -91,35 +112,38 @@ helper_method :get_other_prices
 		cardSetName = MTG::Set.find(cardSet).name
 		cardName = c.name
 
-		url = "https://www.mtggoldfish.com/price/" + cardSetName.strip.gsub(' ', '+').gsub(/'/,"") + '/' + cardName.strip.gsub(' ', '+').gsub(/'/,"").gsub(',',"").gsub('.','+').gsub(':', '').gsub('?', "%253F").gsub('!','').gsub('é', 'e')
-		puts url
-		str = Nokogiri::HTML(open(url))
+		if cardSetName != "Friday Night Magic" and cardSetName.exclude? "From the Vault"
+			url = "https://www.mtggoldfish.com/price/" + cardSetName.strip.gsub(' ', '+').gsub(/'/,"") + '/' + cardName.strip.gsub(' ', '+').gsub(/'/,"").gsub(',',"").gsub('.','+').gsub(':', '').gsub('?', "%253F").gsub('!','').gsub('é', 'e')
+			puts url
+			str = Nokogiri::HTML(open(url))
 
-		prices = str.xpath('//div[@class="price-card-purchase"]/div[@class="price-card-buy-prices"]/a[@class="btn-shop btn btn-default price-card-purchase-button btn-paper-muted"]/div[@class="btn-shop-label"]')
-		abuPrice = ""
-		ckPrice = ""
-		cfPrice = ""
-		prices.each do |i|
-			if i.text.strip == "ABU Games"
-				abuPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
-			elsif i.text.strip == "Card Kingdom"
-				ckPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
-			
-			elsif i.text.strip == "Channell Fireball"
-				cfPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+			prices = str.xpath('//div[@class="price-card-purchase"]/div[@class="price-card-buy-prices"]/a[@class="btn-shop btn btn-default price-card-purchase-button btn-paper-muted"]/div[@class="btn-shop-label"]')
+			abuPrice = ""
+			ckPrice = ""
+			cfPrice = ""
+			prices.each do |i|
+				if i.text.strip == "ABU Games"
+					abuPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+				elsif i.text.strip == "Card Kingdom"
+					ckPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+				
+				elsif i.text.strip == "Channell Fireball"
+					cfPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+				end
 			end
-		end
-		@priceArr.clear
-		@priceArr << abuPrice 
-		@priceArr << ckPrice
-		@priceArr << cfPrice
+			@priceArr.clear
+			@priceArr << abuPrice 
+			@priceArr << ckPrice
+			@priceArr << cfPrice
+
 
 
 		
-		puts "----"
-		puts @priceArr.length
-		@priceArr
-		sleep 5
+			puts "----"
+			puts @priceArr.length
+			@priceArr
+			sleep 5
+		end 
 
 		
 		# cardSet = c.set
@@ -153,62 +177,72 @@ helper_method :get_other_prices
 
 
 
-	
-####################### CARD KINGDOM ######################
+		
+	def get_ck_prices(c)
+		results = Array.new()
+		cardSet = c.set
+		cardSetName = MTG::Set.find(cardSet).name
+		cardName = c.name
+		scraper = Mechanize.new
+		scraper.history_added = Proc.new { sleep 0.5 }
 
-#scraper = Mechanize.new
-#scraper.history_added = Proc.new { sleep 0.5 }
-#
-#ADDRESSCK = 'https://www.cardkingdom.com/purchasing/mtg_singles?filter[sort]=price_desc'
-#
-#scraper.get(ADDRESS) do |search_page|
-#	form = search_page.form_with(:id => 'search') do |search|    
-#		search['filter[name]'] = 'Avacyn'
-#	end
-#	result_page = form.submit
-#	raw_results = result_page.search('div.itemContentWrapper')
-#	raw_results.each do |result|
-#		cardName =  result.css('span.productDetailTitle').text.strip
-#		set =  result.css('div.productDetailSet').text.strip
-#		foil =  result.css('div.foil').text.strip
-#		puts result.css('span.sellDollarAmount')[0].text.strip
-#		puts result.css('span.sellCentsAmount')[0].text.strip
-#		price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
-#		price = price.to_f
-#
-#		results << [cardName, price, set, 'CK']
-#
-#
-#	end
-#end
+		 
 
+		scraper.get('https://www.cardkingdom.com/purchasing/mtg_singles?filter[sort]=price_desc') do |search_page|
+			form = search_page.form_with(:id => 'search') do |search|    
+				search['filter[name]'] = cardName
+			end
+			result_page = form.submit
+			raw_results = result_page.search('div.itemContentWrapper')
+			raw_results.each do |result|
+				newCardName =  result.css('span.productDetailTitle').text.strip
+				set =  result.css('div.productDetailSet').text.strip
+				foil =  result.css('div.foil').text.strip
+				puts result.css('span.sellDollarAmount')[0].text.strip
+				puts result.css('span.sellCentsAmount')[0].text.strip
+				price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
+				price = price.to_f
+
+				results << [newCardName, price, set, 'CK']
 
 
+			end
+		end
+	end
 
-#####################Channel FIREBALL #####################
 
-#ADDRESSCF = 'http://store.channelfireball.com/buylist/search'
-#newScraper.get(ADDRESSCF) do |search_page|
-#	form = search_page.form_with(:id => 'searchform') do |search|
-#		search['c'] = '8'
-#		search['q'] = 'Avacyn'
-#	end
-#	result_page = form.submit
-#	raw_results = result_page.search('li.product_row')
-#	raw_results.each do |result|
-#		i = 0
-#		cardName = result.css('h4.name').text.strip
-#		set = result.css('h5.category').text.strip
-#		price = result.css('span.price').text.strip
-#
-#		puts price
-#		puts cardName
-#		puts set
-#		
-#
-#
-#
-#	end
-#end
+
+
+	#####################Channel FIREBALL #####################
+	def get_cf_prices(c)
+		cardSet = c.set
+		cardSetName = MTG::Set.find(cardSet).name
+		cardName = c.name
+		newScraper = Mechanize.new
+		newScraper.history_added = Proc.new { sleep 0.5 }
+		 
+		newScraper.get('http://store.channelfireball.com/buylist/search') do |search_page|
+			form = search_page.form_with(:id => 'searchform') do |search|
+				search['c'] = '8'
+				search['q'] = 'Avacyn'
+			end
+			result_page = form.submit
+			raw_results = result_page.search('li.product_row')
+			raw_results.each do |result|
+				i = 0
+				cardName = result.css('h4.name').text.strip
+				set = result.css('h5.category').text.strip
+				price = result.css('span.price').text.strip
+
+				puts price
+				puts cardName
+				puts set
+				
+
+
+
+			end
+		end
+	end
 
 end
