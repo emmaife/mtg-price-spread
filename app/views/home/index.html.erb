@@ -2,13 +2,15 @@
 
 <%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
 <% @sets.each do |set| %>
-	<%=check_box_tag "set[]", set.code, nil %><%=set.name%>
+	<%=check_box_tag "set[]", set.id, nil %><%=set.setName%>
 <% end %>
 	<%= label_tag(:q, "Search for:") %>
   <%= text_field_tag(:q) %>
 	<%= submit_tag "Search" %>
 
+
 <%end%>
+
 
 
 

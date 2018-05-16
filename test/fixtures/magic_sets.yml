@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  setName: 
+  tcgID: 
+  ckID: 1
+
+two:
+  setName: 
+  tcgID: 
+  ckID: 1

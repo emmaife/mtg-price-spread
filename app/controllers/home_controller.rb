@@ -3,6 +3,7 @@ class HomeController < ApplicationController
 	require 'mechanize'
 	require 'uri'
 	require 'net/http'
+	require 'cgi'
 
 	helper_method :get_other_prices
 	helper_method :get_tcg_price
@@ -12,7 +13,7 @@ class HomeController < ApplicationController
 
 
 	def index
-		@sets = MTG::Set.all
+		@sets = MagicSet.all
 		#@sets =  MTG::Set.where(expansion: 'core|expansion').all.select { |hash_element| hash_element.type !='promo' }
 		#@sets.each do |x|
 		#	str = str + x.name + "|"
@@ -27,21 +28,124 @@ class HomeController < ApplicationController
 	end
 
 	def search
+		@cardHash = Hash.new
 		@priceArr = Array.new
+		@results = Array.new
+		cardNames = Array.new
 		if params[:q] != ""
     		@cards = MTG::Card.where(name: params[:q]).all
+    		@cards.each do |x|
+    			
+    				y = MagicSet.find_by(sdkID: x.set)
+    				unless y.nil?
+    					cardNames << [x.name, x.set, y.tcgID]
+    				end
+    			
+    		end
+    		cardNames.each do |x|
+    			puts '======'
+    			puts x
+    			url = URI("http://api.tcgplayer.com/catalog/products?categoryId=1&groupId=" + x[2].to_s + "&productName=" +  ERB::Util.url_encode(x[0]) + "&getExtendedFields=true")
+    			http = Net::HTTP.new(url.host, url.port)
+				request = Net::HTTP::Get.new(url)
+				request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+				response = http.request(request)
+				data = JSON.parse(response.body)
+				data['results'].each do |y|
+					puts x[1] 
+					puts '------>'
+					puts y["productId"] 
+					puts y['productName']
+						@cardHash[y["productId"]] = {"name" => y["productName"], "price"=> 0, "set" => x[1] }
+
+				end
+    		end
+    		str = ""
+    		@cardHash.keys.each do |x|
+    			str = str + x.to_s + ","
+    		end
+    		str = str[0...-1]
+    		url  = URI("http://api.tcgplayer.com/pricing/product/" +  ERB::Util.url_encode(str) )
+			http = Net::HTTP.new(url.host, url.port)
+			request = Net::HTTP::Get.new(url)
+			request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+			response = http.request(request)
+			data = JSON.parse(response.body)
+			puts data['results']
+
+			data['results'].each do |x|
+				if x["subTypeName"] == "Normal"
+					@cardHash[x["productId"]]["price"] = x["midPrice"]
+				end
+					
+			end
+			puts @cardHash
+
+
     	
 		else
+			@cards = Array.new
+			@cardHash=Hash.new
 			params[:set].each do |k,v|
+				tcgSet = MagicSet.find(k)
+				tcgSetID =  tcgSet.tcgID
+				ckSetID =MagicSet.find(k).ckID
+				sdkID = MagicSet.find(k).sdkID
 				puts k
-				@cards = Array.new
 				puts params[:set].length
-				(@cards << MTG::Card.where(set: k).all).flatten!
-				puts @cards.length
-				return @cards
-				
+				(@cards << MTG::Card.where(set: sdkID).all).flatten!
+
+				#puts params[:set].length
+				url = URI("http://api.tcgplayer.com/catalog/products?categoryId=1&groupId=" + tcgSetID.to_s)
+				http = Net::HTTP.new(url.host, url.port)
+				request = Net::HTTP::Get.new(url)
+				request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+				response = http.request(request)
+				data = JSON.parse(response.body)
+
+				# get total items to paginate (limit = 100)
+				totalItems = data['totalItems']
+				puts  (data['totalItems']/100).ceil
+				i = 0
+				num = (data['totalItems']/100).ceil
+				while i < num+1 do
+
+					url = URI("http://api.tcgplayer.com/catalog/products?categoryId=1&limit=100&groupId=" + tcgSetID.to_s + '&offset=' + (i *100).to_s )
+					puts url
+					http = Net::HTTP.new(url.host, url.port)
+					request = Net::HTTP::Get.new(url)
+					request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+					response = http.request(request)
+					data = JSON.parse(response.body)
+
+					data['results'].each do |x|
+						@cardHash[x["productId"]] = {"name" => x["productName"], "price"=> 0, "set"=> sdkID}
+
+					end
+					@cardHash
+
+					i+=1
+				end
+
+
+				url = URI("http://api.tcgplayer.com/pricing/group/" + tcgSetID.to_s)
+				http = Net::HTTP.new(url.host, url.port)
+				request = Net::HTTP::Get.new(url)
+				request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+				response = http.request(request)
+				data = JSON.parse(response.body)
+				puts data['results']
+
+				data['results'].each do |x|
+
+					@cardHash[x["productId"]]["price"] = x["midPrice"]
+					
+				end
 
 			end
+			puts @cardHash
+			
+			return @cards
 			
 		
 
@@ -63,15 +167,18 @@ class HomeController < ApplicationController
 		require 'net/http'
 		tcgPrice = ""
 		cardSet = c.set
+
+		puts c.set
 		cardSetName = MTG::Set.find(cardSet).name
 		cardName = c.name
+		puts cardName
 		sleep 2
 		url = URI("http://api.staging.tcgplayer.com/catalog/products?categoryId=1&limit=50&productName=" + cardName )
 
 		http = Net::HTTP.new(url.host, url.port)
 
 		request = Net::HTTP::Get.new(url)
-		request['Authorization'] = "Bearer jzJHnEkCSmZiBoeLZ5Y9U6uaZtcpSqPN8WBzgNrKHXU8DkuGtdgBU93oBjgbNOUFScJQuwIwfrixCy03pATrRT7b6j14hnHTNtvQgY9MVwH7ugKo5Mro5IY8uxcwnfQmWYSCJSe5fr31mS5tUTycQbWvsKy-9Z_XrVyiN32QRawGFIKaFP-Ipazf181dxfl2_Wb2IwETFKipG-AmQOxLnaUKphv3q4iHMNQQd7UqTxkgUyHvLzXgL_Cuv8pz6PdsbLY20gSdiCbTj32a2Ih3xDnS61QPrSC9M_Md16s60a-waJfc1hnEpitdqcP41mGcCkz3NvOjkPojpyx6epkpQFmudMw"
+		request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
 
 
 		response = http.request(request)
@@ -82,7 +189,7 @@ class HomeController < ApplicationController
 
 		newHttp = Net::HTTP.new(newUrl.host, newUrl.port)
 		newRequest = Net::HTTP::Get.new(newUrl)
-		newRequest['Authorization'] = "Bearer jzJHnEkCSmZiBoeLZ5Y9U6uaZtcpSqPN8WBzgNrKHXU8DkuGtdgBU93oBjgbNOUFScJQuwIwfrixCy03pATrRT7b6j14hnHTNtvQgY9MVwH7ugKo5Mro5IY8uxcwnfQmWYSCJSe5fr31mS5tUTycQbWvsKy-9Z_XrVyiN32QRawGFIKaFP-Ipazf181dxfl2_Wb2IwETFKipG-AmQOxLnaUKphv3q4iHMNQQd7UqTxkgUyHvLzXgL_Cuv8pz6PdsbLY20gSdiCbTj32a2Ih3xDnS61QPrSC9M_Md16s60a-waJfc1hnEpitdqcP41mGcCkz3NvOjkPojpyx6epkpQFmudMw"
+		newRequest['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
 		newResponse = http.request(newRequest)
 		newData = JSON.parse(newResponse.body)
 
@@ -105,46 +212,46 @@ class HomeController < ApplicationController
 
 
 
-   	def get_other_prices(c)
-   		sleep 2
-
-   		cardSet = c.set
-		cardSetName = MTG::Set.find(cardSet).name
-		cardName = c.name
-
-		if cardSetName != "Friday Night Magic" and cardSetName.exclude? "From the Vault"
-			url = "https://www.mtggoldfish.com/price/" + cardSetName.strip.gsub(' ', '+').gsub(/'/,"") + '/' + cardName.strip.gsub(' ', '+').gsub(/'/,"").gsub(',',"").gsub('.','+').gsub(':', '').gsub('?', "%253F").gsub('!','').gsub('é', 'e')
-			puts url
-			str = Nokogiri::HTML(open(url))
-
-			prices = str.xpath('//div[@class="price-card-purchase"]/div[@class="price-card-buy-prices"]/a[@class="btn-shop btn btn-default price-card-purchase-button btn-paper-muted"]/div[@class="btn-shop-label"]')
-			abuPrice = ""
-			ckPrice = ""
-			cfPrice = ""
-			prices.each do |i|
-				if i.text.strip == "ABU Games"
-					abuPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
-				elsif i.text.strip == "Card Kingdom"
-					ckPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
-				
-				elsif i.text.strip == "Channell Fireball"
-					cfPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
-				end
-			end
-			@priceArr.clear
-			@priceArr << abuPrice 
-			@priceArr << ckPrice
-			@priceArr << cfPrice
-
-
-
-		
-			puts "----"
-			puts @priceArr.length
-			@priceArr
-			sleep 5
-		end 
-
+   #	def get_other_prices(c)
+   #		sleep 2
+#
+   #		cardSet = c.set
+	#	cardSetName = MTG::Set.find(cardSet).name
+	#	cardName = c.name
+#
+	#	if cardSetName != "Friday Night Magic" and cardSetName.exclude? "From the Vault"
+	#		url = "https://www.mtggoldfish.com/price/" + cardSetName.strip.gsub(' ', '+').gsub(/'/,"") + '/' + cardName.strip.gsub(' ', '+').gsub(/'/,"").gsub(',',"").gsub('.','+').gsub(':', '').gsub('?', "%253F").gsub('!','').gsub('é', 'e')
+	#		puts url
+	#		str = Nokogiri::HTML(open(url))
+#
+	#		prices = str.xpath('//div[@class="price-card-purchase"]/div[@class="price-card-buy-prices"]/a[@class="btn-shop btn btn-default price-card-purchase-button btn-paper-muted"]/div[@class="btn-shop-label"]')
+	#		abuPrice = ""
+	#		ckPrice = ""
+	#		cfPrice = ""
+	#		prices.each do |i|
+	#			if i.text.strip == "ABU Games"
+	#				abuPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+	#			elsif i.text.strip == "Card Kingdom"
+	#				ckPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+	#			
+	#			elsif i.text.strip == "Channell Fireball"
+	#				cfPrice = i.next_element.text.strip.gsub("\n$", "").gsub(/\A\p{Space}*|\p{Space}*\z/, '')
+	#			end
+	#		end
+	#		@priceArr.clear
+	#		@priceArr << abuPrice 
+	#		@priceArr << ckPrice
+	#		@priceArr << cfPrice
+#
+#
+#
+	#	
+	#		puts "----"
+	#		puts @priceArr.length
+	#		@priceArr
+	#		sleep 5
+	#	end 
+#
 		
 		# cardSet = c.set
 		# cardSetName = MTG::Set.find(cardSet).name
@@ -173,24 +280,31 @@ class HomeController < ApplicationController
 		# @priceArr
 
 	
-  	end
+  #	end
 
 
 
 		
 	def get_ck_prices(c)
+
 		results = Array.new()
-		cardSet = c.set
-		cardSetName = MTG::Set.find(cardSet).name
-		cardName = c.name
+		@results.clear
+		setCode = c[1]["set"]
+		ckCode = MagicSet.find_by(sdkID: setCode)["ckID"]
+		puts ckCode
+
+	
+		cardName = c[1]["name"]
+		puts cardName
 		scraper = Mechanize.new
 		scraper.history_added = Proc.new { sleep 0.5 }
-
+		
 		 
-
-		scraper.get('https://www.cardkingdom.com/purchasing/mtg_singles?filter[sort]=price_desc') do |search_page|
+		
+		scraper.get('https://www.cardkingdom.com/purchasing/mtg_singles?filter[sort]=price_desc&filter[search]=mtg_advanced&filter[nonfoil]=1') do |search_page|
 			form = search_page.form_with(:id => 'search') do |search|    
 				search['filter[name]'] = cardName
+				search['filter[category_id]'] = ckCode
 			end
 			result_page = form.submit
 			raw_results = result_page.search('div.itemContentWrapper')
@@ -202,10 +316,11 @@ class HomeController < ApplicationController
 				puts result.css('span.sellCentsAmount')[0].text.strip
 				price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
 				price = price.to_f
-
-				results << [newCardName, price, set, 'CK']
-
-
+				
+		
+				@results << price
+		
+		
 			end
 		end
 	end
@@ -214,35 +329,35 @@ class HomeController < ApplicationController
 
 
 	#####################Channel FIREBALL #####################
-	def get_cf_prices(c)
-		cardSet = c.set
-		cardSetName = MTG::Set.find(cardSet).name
-		cardName = c.name
-		newScraper = Mechanize.new
-		newScraper.history_added = Proc.new { sleep 0.5 }
-		 
-		newScraper.get('http://store.channelfireball.com/buylist/search') do |search_page|
-			form = search_page.form_with(:id => 'searchform') do |search|
-				search['c'] = '8'
-				search['q'] = 'Avacyn'
-			end
-			result_page = form.submit
-			raw_results = result_page.search('li.product_row')
-			raw_results.each do |result|
-				i = 0
-				cardName = result.css('h4.name').text.strip
-				set = result.css('h5.category').text.strip
-				price = result.css('span.price').text.strip
-
-				puts price
-				puts cardName
-				puts set
-				
-
-
-
-			end
-		end
-	end
+	#def get_cf_prices(c)
+	#	cardSet = c.set
+	#	cardSetName = MTG::Set.find(cardSet).name
+	#	cardName = c.name
+	#	newScraper = Mechanize.new
+	#	newScraper.history_added = Proc.new { sleep 0.5 }
+	#	 
+	#	newScraper.get('http://store.channelfireball.com/buylist/search') do |search_page|
+	#		form = search_page.form_with(:id => 'searchform') do |search|
+	#			search['c'] = '8'
+	#			search['q'] = 'Avacyn'
+	#		end
+	#		result_page = form.submit
+	#		raw_results = result_page.search('li.product_row')
+	#		raw_results.each do |result|
+	#			i = 0
+	#			cardName = result.css('h4.name').text.strip
+	#			set = result.css('h5.category').text.strip
+	#			price = result.css('span.price').text.strip
+#
+	#			puts price
+	#			puts cardName
+	#			puts set
+	#			
+#
+#
+#
+	#		end
+	#	end
+	#end
 
 end

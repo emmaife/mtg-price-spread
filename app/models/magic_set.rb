@@ -1,0 +1,2 @@
+class MagicSet < ApplicationRecord
+end

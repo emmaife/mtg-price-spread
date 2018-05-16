@@ -10,12 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171023140847) do
+ActiveRecord::Schema.define(version: 20180516154519) do
 
   create_table "homes", force: :cascade do |t|
     t.text     "searchQ"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "magic_sets", force: :cascade do |t|
+    t.string   "setName"
+    t.integer  "tcgID"
+    t.integer  "ckID"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "sdkID"
   end
 
 end

@@ -2,30 +2,30 @@
 <table border="1">
 	<tr>
 		<th>Card</th>
+
 		<th>TCG Mid</th>
-		<th>ABU</th>
 		<th>Card Kingdom</th>
-		<th>CFB</th>
 		<th>Spread</th>
 		
 	</tr>
-<% @cards[0..20].each do |card| 
-	sleep 2
+<% @cardHash.to_a[0..2].each do |x| 
 
 %>
 	<tr>
 		
-		<td><%= card.name %></td>
-		<% newVar = get_tcg_price(card)%>
-		<td><%=newVar%></td>
-		<%get_other_prices(card)%>
-		<td><%=@priceArr[0]%></td>
-		<td><%=@priceArr[1]%></td>
-		<td><%=@priceArr[2]%></td>
-
-		<td><%=1-@priceArr.max.to_f/newVar.to_f%></td>
+		<td><%=x[1]["name"] + ' (' + x[1]["set"] + ')'%></td>
+		<% newVar = ""%>
+		<td><%=x[1]["price"]%></td>
+		<%get_ck_prices(x)%>
+		<td><%=@results[0].to_f%></td>
+		
+		<td><%=number_to_percentage( (1-(@results[0].to_f/x[1]["price"].to_f))*100, precision:0) %></td>
 		
 	</tr>
+	<%#get_ck_prices(card)%>
+	<%#@results[0]%>
+
+
 
 
 <% end %>
