@@ -8,18 +8,17 @@
 		<th>Spread</th>
 		
 	</tr>
-<% @cardHash.to_a[0..2].each do |x| 
+<% @cardHash.each do |k,v| 
 
 %>
 	<tr>
 		
-		<td><%=x[1]["name"] + ' (' + x[1]["set"] + ')'%></td>
-		<% newVar = ""%>
-		<td><%=x[1]["price"]%></td>
-		<%get_ck_prices(x)%>
-		<td><%=@results[0].to_f%></td>
+		<td><%=v["name"] + ' (' + v["set"] + ')'%></td>
+		<td><%=v["price"]%></td>
 		
-		<td><%=number_to_percentage( (1-(@results[0].to_f/x[1]["price"].to_f))*100, precision:0) %></td>
+		<td><%=v["ckPrice"]%></td>
+		
+		<td><%= v["spread"] %></td>
 		
 	</tr>
 	<%#get_ck_prices(card)%>
