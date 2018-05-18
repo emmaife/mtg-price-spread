@@ -1,11 +1,22 @@
-<h1>Home#index</h1>
+<h1>MTG Price Spread</h1>
 
 <%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
-<% @sets.each do |set| %>
-	<%=check_box_tag "set[]", set.id, nil %><%=set.setName%>
-<% end %>
 	<%= label_tag(:q, "Search for:") %>
-  <%= text_field_tag(:q) %>
+	<%= text_field_tag(:q) %><br><br>
+	<% i = 0 %>
+	<%firstLetter = ""%>
+	<% @sets.each do |set| %>
+		<% if (set.setName[0] > firstLetter ||  set.setName == "Aether Revolt") && (i > 5 ) %>
+			<br><br>
+		<%end%>
+		<%=check_box_tag "set[]", set.id, nil %><%=set.setName%>&nbsp;&nbsp;
+
+		<% i+=1
+		firstLetter = set.setName[0]
+
+		%>
+	<% end %>
+
 	<%= submit_tag "Search" %>
 
 
