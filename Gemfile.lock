@@ -56,6 +56,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
+    connection_pool (2.2.1)
     crass (1.0.4)
     declarative (0.0.10)
     declarative-option (0.1.0)
@@ -130,6 +131,8 @@ GEM
     pg (0.21.0)
     puma (3.11.4)
     rack (2.0.5)
+    rack-protection (2.0.1)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.7)
@@ -159,6 +162,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    redis (4.0.1)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -180,6 +184,11 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    sidekiq (5.1.3)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
     simple_form (4.0.0)
       actionpack (> 4)
       activemodel (> 4)
@@ -242,6 +251,7 @@ DEPENDENCIES
   rails (~> 5.0.0, >= 5.0.0.1)
   rest-client
   sass-rails (~> 5.0)
+  sidekiq
   simple_form
   spring
   spring-watcher-listen (~> 2.0.0)
