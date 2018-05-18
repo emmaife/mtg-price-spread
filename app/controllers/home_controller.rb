@@ -55,6 +55,9 @@ class HomeController < ApplicationController
 
 				end
     		end
+
+    		@cardHash.delete_if{|k,v|  v['rarity'] == "T" || v['rarity'] == "L"}
+
     		str = ""
     		@cardHash.keys.each do |x|
     			str = str + x.to_s + ","
@@ -113,13 +116,15 @@ class HomeController < ApplicationController
 					data = JSON.parse(response.body)
 
 					data['results'].each do |x|
-						@cardHash[x["productId"]] = {"name" => x["productName"], "price"=> 0, "set"=> sdkID, "foilPrice" => nil, "ckPrice" => 0, "ckFoil" => nil, "spread" => nil}
+						@cardHash[x["productId"]] = {"name" => x["productName"], "price"=> 0, "set"=> sdkID, "foilPrice" => nil, "ckPrice" => 0, "ckFoil" => nil, "spread" => nil, "rarity"=> x['extendedData'][0]['value']}
 
 					end
 					@cardHash
 
 					i+=1
 				end
+
+				@cardHash.delete_if{|k,v|  v['rarity'] == "T" || v['rarity'] == "L" || v['rarity'] == "U" || v['rarity'] == "C"}
 
 
 				#url = URI("http://api.tcgplayer.com/pricing/group/" + tcgSetID.to_s)
