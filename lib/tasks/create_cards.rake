@@ -22,7 +22,7 @@ task :create_cards => :environment do
                 response = http.request(request)
                 data = JSON.parse(response.body)
                 data['results'].each do |y|
-                    @cardHash[y["productId"]] = {"name" => y["productName"], "tcgPrice"=> 0,  "ckPrice" => 0, "isFoil"=> nil, "set"=> x["sdkID"],  "spread" => nil, "rarity"=> y['extendedData'][0]['value']}
+                    @cardHash[y["productId"]] = {"name" => y["productName"], "tcgPrice"=> 0,  "ckPrice" => 0, "isFoil"=> nil, "set"=> x["sdkID"],  "spread" => nil, "rarity"=> y['extendedData'][0]['value'], "set_id" => x['id']}
                     puts @cardHash[y["productId"]]
                 end
                 sleep 1
@@ -34,7 +34,7 @@ task :create_cards => :environment do
 
     @cardHash.delete_if{|k,v|  v['rarity'] == "T" || v['rarity'] == "L" || v['rarity'] == "U" || v['rarity'] == "C" ||  v['rarity'] == "P" ||  v['rarity'] == "S"  }
 
-    @cardHash.each  { |k,v|  MagicCard.create(:productID => k, :name => v['name'], :tcgPrice => nil, :ckPrice => nil, :isFoil => false, :set => v['set'], :spread => nil ) }
+    @cardHash.each  { |k,v|  MagicCard.create(:productID => k, :name => v['name'], :tcgPrice => nil, :ckPrice => nil, :isFoil => false, :set => v['set'], :spread => nil, :set_id=> v['set_id'] ) }
 
 end
 
