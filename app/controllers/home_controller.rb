@@ -36,10 +36,10 @@ class HomeController < ApplicationController
 			params[:set].each do |k|
 				puts k.to_s + '---'
 				set = MagicSet.find_by(id: k)
-				c = MagicCard.where(set: set['tcgID'])
+				c = MagicCard.where(set: set['sdkID'])
 				
 				#unless c['spread'].nil?
-					@results << MagicCard.where(set: set['tcgID']).where.not(spread: nil)
+					@results << MagicCard.where(set: set['sdkID']).where.not(spread: nil)
 				#end
 
 				

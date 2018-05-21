@@ -12,11 +12,15 @@
 num = @results.length
 
 		@results.each do |x| 
+			foilTxt = ""
+			if x['isFoil'] 
+				foilTxt = " - FOIL "
+			end
 
 %>
 		<tr>
 		
-				<td><%=x['name'] %></td>
+				<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
 				<td><%=x["tcgPrice"]%></td>
 				
 				<td><%=x["ckPrice"]%></td>
