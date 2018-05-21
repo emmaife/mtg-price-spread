@@ -8,25 +8,32 @@
 		<th>Spread</th>
 		
 	</tr>
-<% @cardHash.each do |k,v| 
+<% 
+num = @results.length
+
+		@results.each do |x| 
 
 %>
-	<tr>
+		<tr>
 		
-		<td><%=v["name"] + ' (' + v["set"] + ')'%></td>
-		<td><%=v["price"]%></td>
+				<td><%=x['name'] %></td>
+				<td><%=x["tcgPrice"]%></td>
+				
+				<td><%=x["ckPrice"]%></td>
+				
+				<td><%= x["spread"] %></td>
 		
-		<td><%=v["ckPrice"]%></td>
+		</tr>
+		<%
+	end
 		
-		<td><%= v["spread"] %></td>
-		
-	</tr>
+
+		%>
 	<%#get_ck_prices(card)%>
 	<%#@results[0]%>
 
 
 
 
-<% end %>
 </table>
 

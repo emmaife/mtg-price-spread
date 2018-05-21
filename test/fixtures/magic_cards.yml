@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  productID: 1
+  name: MyString
+  tcgPrice: 1
+  ckPrice: 1
+  isFoil: false
+  set: MyString
+
+two:
+  productID: 1
+  name: MyString
+  tcgPrice: 1
+  ckPrice: 1
+  isFoil: false
+  set: MyString

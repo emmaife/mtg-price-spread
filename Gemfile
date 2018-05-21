@@ -27,6 +27,8 @@ gem 'simple_form'
 gem 'nokogiri'
 gem 'mechanize'
 gem 'rest-client'
+gem 'whenever', require: false
+
 gem 'sidekiq'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 3.0'
