@@ -91,7 +91,7 @@ task :get_prices => :environment do
                     price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
                     price = price.to_f
                     if foil != "FOIL"
-                        m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['tcgID'])
+                        m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
                         unless m.nil?
                             m.update_attribute(:ckPrice, price )
                             unless m["tcgPrice"].nil?
@@ -101,7 +101,7 @@ task :get_prices => :environment do
                          end
                   
                     else
-                        f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['tcgID'])
+                        f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
                         unless f.nil?
                             f.update_attribute(:ckPrice, price ) 
                             unless f["tcgPrice"].nil?
