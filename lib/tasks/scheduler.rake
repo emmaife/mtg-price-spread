@@ -60,8 +60,8 @@ task :get_prices => :environment do
                 if y["subTypeName"] == "Normal"
                     c = MagicCard.find_by(productID: y['productId'])
                     c.update_attribute(:tcgPrice,  y["midPrice"])
-                elsif x["subTypeName"] == "Foil"
-                    if MagicCard.where(productID: -(x['productId'])).exists?
+                elsif y["subTypeName"] == "Foil"
+                    if MagicCard.where(productID: -(y['productId'])).exists?
                         c = MagicCard.find_by(productID: -(y['productId']))
                         c.update_attribute(:tcgPrice,  y["midPrice"])
                     else
