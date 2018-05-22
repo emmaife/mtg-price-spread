@@ -29,6 +29,7 @@ task :test_prices => :environment do
                     else
                         puts "NOT EXISTS"
                         puts -(y['productId']) 
+                        puts x['name']
                     end
                 end
             end
