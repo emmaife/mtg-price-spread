@@ -14,20 +14,19 @@ task :test_prices => :environment do
             response = http.request(request)
             data = JSON.parse(response.body)
             data['results'].each do |y|
-                if y["subTypeName"] == "Normal"
-                    if MagicCard.where(productID: y['productId']).exists?
-                        c = MagicCard.find_by(productID: y['productId'])
-                        puts 'yes'
-                    end
+               if y["subTypeName"] == "Normal"
+                    c = MagicCard.find_by(productID: y['productId'])
+                    puts "NORMAL"
+                    puts y["midPrice"]
                 elsif y["subTypeName"] == "Foil"
+                    puts "FOIL"
                     if MagicCard.where(productID: -(y['productId'])).exists?
                         c = MagicCard.find_by(productID: -(y['productId']))
-                        puts c
+                        "EXISTS"
+                        puts c['productID']
                     else
-                        puts  -(y['productId'])
-                        puts x['name']
-                        puts x['set']
-
+                        "NOT EXISTS"
+                        puts -(y['productId']) 
                     end
                 end
             end
