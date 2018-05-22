@@ -24,7 +24,7 @@ task :test_prices => :environment do
                     else
                         puts  -(y['productId'])
                         puts x['name']
-                        puts x['set'] )
+                        puts x['set']
 
                     end
                 end
