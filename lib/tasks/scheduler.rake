@@ -59,7 +59,7 @@ task :get_prices => :environment do
                              end
                          end
                   
-                    else
+                    elsif foil == "FOIL"
                         f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
                         unless f.nil?
                             f.update_attribute(:ckPrice, price ) 
