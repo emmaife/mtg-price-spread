@@ -18,14 +18,16 @@ task :test_prices => :environment do
                     c = MagicCard.find_by(productID: y['productId'])
                     puts "NORMAL"
                     puts y["midPrice"]
+                    puts c['name']
                 elsif y["subTypeName"] == "Foil"
                     puts "FOIL"
                     if MagicCard.where(productID: -(y['productId'])).exists?
                         c = MagicCard.find_by(productID: -(y['productId']))
-                        "EXISTS"
+                       puts  "EXISTS"
                         puts c['productID']
+                        puts c['name']
                     else
-                        "NOT EXISTS"
+                        puts "NOT EXISTS"
                         puts -(y['productId']) 
                     end
                 end
