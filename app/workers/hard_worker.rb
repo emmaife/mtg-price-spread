@@ -1,5 +1,6 @@
 class HardWorker
     include Sidekiq::Worker
+    require 'open-uri'
 
     def perform
         #MagicCard.all.each do |x|
