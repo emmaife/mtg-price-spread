@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-
+gem 'sprockets-rails', :require => 'sprockets/railtie'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.0.0', '>= 5.0.0.1'
 # Use Puma as the app server
@@ -13,6 +13,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby
+gem 'bootstrap', '~> 4.1.1'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -22,6 +23,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 
 gem 'mtg_sdk'
+
 
 gem 'simple_form'
 gem 'nokogiri'
