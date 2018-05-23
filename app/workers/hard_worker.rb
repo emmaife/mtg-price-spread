@@ -28,44 +28,40 @@ class HardWorker
 
         MagicSet.all.each do |x|
             ckSetCode = x['ckID']
-            scraper = Mechanize.new
-            scraper.history_added = Proc.new { sleep 0.5 }
             sleep 1
+            page = Nokogiri::HTML(open("https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=" + ckSetCode.to_s))
 
-            scraper.get('https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=' + ckSetCode.to_s) do |search_page|
-                form = search_page.form_with(:id => 'search')
-                result_page = form.submit
-                raw_results = result_page.search('div.itemContentWrapper')
-                raw_results.each do |result|
-                    unless result.css('span.sellDollarAmount')[0].nil?
-                        newCardName =  result.css('span.productDetailTitle').text.strip
-                        foil =  result.css('div.foil').text.strip
-                        price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
-                        price = price.to_f
-                        if foil != "FOIL"
-                            m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
-                            unless m.nil?
-                                m.update_attribute(:ckPrice, price )
-                                unless m["tcgPrice"].nil?
-                                    spread =  ((1 - (price/m["tcgPrice"]))*100)
-                                    m.update_attribute(:spread, spread  ) 
-                                 end
+            page.css('div.itemContentWrapper').each do |result|
+                unless result.css('span.sellDollarAmount')[0].nil?
+                    newCardName =  result.css('span.productDetailTitle').text.strip
+                    foil =  result.css('div.foil').text.strip
+                    price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
+                    price = price.to_f
+                    puts price
+                    puts newCardName
+                    if foil != "FOIL"
+                        m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
+                        unless m.nil?
+                            m.update_attribute(:ckPrice, price )
+                            unless m["tcgPrice"].nil?
+                                spread =  ((1 - (price/m["tcgPrice"]))*100)
+                                m.update_attribute(:spread, spread  ) 
                              end
-                      
-                        elsif foil == "FOIL"
-                            f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
-                            unless f.nil?
-                                f.update_attribute(:ckPrice, price ) 
-                                unless f["tcgPrice"].nil?
-                                    spread =  ((1 - (price/f["tcgPrice"]))*100)
-                                    f.update_attribute(:spread, spread  ) 
-                                end
+                         end
+                  
+                    elsif foil == "FOIL"
+                        f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
+                        unless f.nil?
+                            f.update_attribute(:ckPrice, price ) 
+                            unless f["tcgPrice"].nil?
+                                spread =  ((1 - (price/f["tcgPrice"]))*100)
+                                f.update_attribute(:spread, spread  ) 
                             end
                         end
                     end
                 end
-                sleep 1
             end
+            sleep 1
         end
     end
 
