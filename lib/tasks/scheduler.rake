@@ -1,8 +1,8 @@
 
-
 desc "This task is called by the Heroku Schedular add-on to get tcg pricing data"
 
 task :get_tcg_prices => :environment do
+    require 'open-uri'
 
      MagicCard.all.each do |x|
          url = URI("http://api.tcgplayer.com/pricing/product/" + x['productID'].to_s )
