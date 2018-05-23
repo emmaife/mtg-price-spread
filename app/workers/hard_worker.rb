@@ -43,6 +43,7 @@ class HardWorker
                     if foil != "FOIL"
                         m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
                         unless m.nil?
+                            m.update_attribute(:ckPrice, 0.0 )
                             m.update_attribute(:ckPrice, price )
                             unless m["tcgPrice"].nil?
                                 spread =  ((1 - (price/m["tcgPrice"]))*100)
@@ -53,6 +54,7 @@ class HardWorker
                     elsif foil == "FOIL"
                         f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
                         unless f.nil?
+                            f.update_attribute(:ckPrice, 0.0 ) 
                             f.update_attribute(:ckPrice, price ) 
                             unless f["tcgPrice"].nil?
                                 spread =  ((1 - (price/f["tcgPrice"]))*100)
@@ -64,6 +66,8 @@ class HardWorker
             end
             sleep 1
         end
+
+        MagicCard.where("updated_at < ?", Date.today).update_all(ckPrice: nil)
     end
 
     def perform_x
