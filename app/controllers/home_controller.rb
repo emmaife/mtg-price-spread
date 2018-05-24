@@ -20,6 +20,8 @@ class HomeController < ApplicationController
 
     		@cards = MTG::Card.where(page: 1).where(pageSize: 20).all
   		end
+  		negativeCards = MagicCard.where("spread < ?", 0)
+		bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM'])
 	end
 
 	def search
@@ -52,6 +54,13 @@ class HomeController < ApplicationController
 			
 		end
 	end
+
+	def view_low_spread
+		negativeCards = MagicCard.where("spread < ?", 0)
+		bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM'])
+	end
+
+
 
 	
 

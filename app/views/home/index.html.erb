@@ -1,5 +1,34 @@
 <h1>MTG Price Spread</h1>
 
+<title>Top Low Spread Standard Cards</title>
+<table>
+	<tr>
+		<th>Card</th>
+
+		<th>TCG Mid</th>
+		<th>Card Kingdom</th>
+		<th>Spread</th>
+		
+	</tr>
+	<% 
+
+	bestPosSpread.each do |x| 
+		foilTxt = ""
+		if x['isFoil'] 
+			foilTxt = " - FOIL "
+		end
+	%>
+		<tr>
+			<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+			<td><%=x["tcgPrice"]%></td>
+			<td><%=x["ckPrice"]%></td>
+			<td><%= x["spread"] %></td>
+		</tr>
+	<%
+	end
+	%>
+</table>
+
 <%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
 	<%= label_tag(:q, "Search for:") %>
 	<%= text_field_tag(:q) %><br><br>
