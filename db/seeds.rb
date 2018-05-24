@@ -67,7 +67,6 @@ MagicSet.create([
 		{setName: 'Dragons Maze', tcgID: 570, ckID: 2892, sdkID: 'DGM' } ,
 		{setName: 'Dragons of Tarkir', tcgID: 1515, ckID: 2938, sdkID: 'DTK' } ,
 		{setName: 'Duel Decks: Ajani vs. Nicol Bolas', tcgID: 30, ckID: 2865, sdkID: 'DDH' } ,
-		{setName: 'Duel Decks: Anthology', tcgID: 1490, ckID: 2918, sdkID: '' } ,
 		{setName: 'Duel Decks: Blessed vs. Cursed', tcgID: 1726, ckID: 2969, sdkID: 'DDQ' } ,
 		{setName: 'Duel Decks: Divine vs. Demonic', tcgID: 31, ckID: 2480, sdkID: 'DDC' } ,
 		{setName: 'Duel Decks: Elspeth vs. Kiora', tcgID: 1511, ckID: 2936, sdkID: 'DDO' } ,
@@ -125,7 +124,6 @@ MagicSet.create([
 		{setName: 'Legions', tcgID: 66, ckID: 2555, sdkID: 'LGN' } ,
 		{setName: 'Lorwyn', tcgID: 67, ckID: 2560, sdkID: 'LRW' } ,
 		{setName: 'Magic Origins', tcgID: 1512, ckID: 2950, sdkID: 'ORI' } ,
-		{setName: 'Masterpiece Series: Amonkhet Invocations', tcgID: 1909, ckID: 3044, sdkID: 'MPS_AKH' } ,
 		{setName: 'Masterpiece Series: Kaladesh Inventions', tcgID: 1837, ckID: 2984, sdkID: 'MPS' } ,
 		{setName: 'Masters 25', tcgID: 2189, ckID: 3078, sdkID: 'A25' } ,
 		{setName: 'Mercadian Masques', tcgID: 73, ckID: 2565, sdkID: 'MMQ' } ,
@@ -171,7 +169,6 @@ MagicSet.create([
 		{setName: 'The Dark', tcgID: 109, ckID: 2690, sdkID: 'DRK' } ,
 		{setName: 'Theros', tcgID: 1144, ckID: 2900, sdkID: 'THS' } ,
 		{setName: 'Time Spiral', tcgID: 110, ckID: 2695, sdkID: 'TSP' } ,
-		{setName: 'Timeshifted', tcgID: 111, ckID: 2700, sdkID: '' } ,
 		{setName: 'Torment', tcgID: 112, ckID: 2705, sdkID: 'TOR' } ,
 		{setName: 'Unglued', tcgID: 113, ckID: 2710, sdkID: 'UGL' } ,
 		{setName: 'Unhinged', tcgID: 114, ckID: 2715, sdkID: 'UNH' } ,
@@ -183,7 +180,6 @@ MagicSet.create([
 		{setName: 'Vanguard', tcgID: 119, ckID: 2740, sdkID: 'VAN' } ,
 		{setName: 'Visions', tcgID: 120, ckID: 2745, sdkID: 'VIS' } ,
 		{setName: 'Weatherlight', tcgID: 121, ckID: 2750, sdkID: 'WTH' } ,
-		{setName: 'World Championship Decks', tcgID: 2198, ckID: 2975, sdkID: '' } ,
 		{setName: 'Worldwake', tcgID: 122, ckID: 2840, sdkID: 'WWK' } ,
 		{setName: 'Zendikar', tcgID: 124, ckID: 2826, sdkID: 'ZEN'}
 

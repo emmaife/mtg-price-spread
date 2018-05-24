@@ -1,56 +1,173 @@
-<h1>MTG Price Spread</h1>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <meta name="description" content="">
+	    <meta name="author" content="">
+	    <link rel="icon" href="../../../../favicon.ico">
 
-<title>Top Low Spread Standard Cards</title>
-<table>
-	<tr>
-		<th>Card</th>
+	    <title>MTG Spread</title>
 
-		<th>TCG Mid</th>
-		<th>Card Kingdom</th>
-		<th>Spread</th>
+	    <link href="starter-template.css" rel="stylesheet">
+	         <link href="//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css" rel="stylesheet" type="text/css" /> 
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+	      <a class="navbar-brand" href="#">MTG Spread</a>
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="navbar-toggler-icon"></span>
+	      </button>
+
+	      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+	        <ul class="navbar-nav mr-auto">
+	          <li class="nav-item active">
+	            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" href="/home/neg_spread">Negative Spreads</a>
+	          </li>
+	          <li class="nav-item">
+	            <a class="nav-link" href="#">Lowest Standard Spreads</a>
+	          </li>
+	         
+	        </ul>
+	        <%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get', class: 'form-inline my-2 my-lg-0'  do%>
+			<%= text_field_tag(:q, nil, class: 'form-control mr-sm-2', placeholder: "Search For Card") %><br><br>
+			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+			<%end%> 
+	        
+	         
+	      </div>
+    	</nav>
+
+    <main role="main" class="container">
+    	<div class="starter-template">
+        	<h1>MTG Price Spread</h1>
+        	
+        </div>
+		<div class="row">
+	        <div class="col-6">
+	        	<h5>Top Low Spread Standard Cards</h5>
+				<table border=".5" class="table-striped">
+					<tr>
+						<th>Card</th>
+
+						<th>TCG Mid</th>
+						<th>Card Kingdom</th>
+						<th>Spread</th>
+						
+					</tr>
+					<% 
+
+					@bestPosSpread.each do |x| 
+						foilTxt = ""
+						if x['isFoil'] 
+							foilTxt = " - FOIL "
+						end
+					%>
+						<tr>
+							<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+							<td><%=x["tcgPrice"]%></td>
+							<td><%=x["ckPrice"]%></td>
+							<td><%= x["spread"] %></td>
+						</tr>
+					<%
+					end
+					%>
+				</table>
+			</div>
+	        <div class="col-6">
+	        	<h5>Top Negative Spread Cards</h5>
+				<table border=".5" class="table-striped">
+					<tr>
+						<th>Card</th>
+
+						<th>TCG Mid</th>
+						<th>Card Kingdom</th>
+						<th>Spread</th>
+						
+					</tr>
+					<% 
+
+					@negativeCards.each do |x| 
+						foilTxt = ""
+						if x['isFoil'] 
+							foilTxt = " - FOIL "
+						end
+					%>
+						<tr>
+							<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+							<td><%=x["tcgPrice"]%></td>
+							<td><%=x["ckPrice"]%></td>
+							<td><%= x["spread"] %></td>
+						</tr>
+					<%
+					end
+					%>
+				</table>
+	        </div>
+  		</div>
+
 		
-	</tr>
-	<% 
-
-	@bestPosSpread.each do |x| 
-		foilTxt = ""
-		if x['isFoil'] 
-			foilTxt = " - FOIL "
-		end
-	%>
-		<tr>
-			<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
-			<td><%=x["tcgPrice"]%></td>
-			<td><%=x["ckPrice"]%></td>
-			<td><%= x["spread"] %></td>
-		</tr>
-	<%
-	end
-	%>
-</table>
-
-<%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
-	<%= label_tag(:q, "Search for:") %>
-	<%= text_field_tag(:q) %><br><br>
-	<% i = 0 %>
-	<%firstLetter = ""%>
-	<% @sets.each do |set| %>
-		<% if (set.setName[0] > firstLetter ||  set.setName == "Aether Revolt") && (i > 5 ) %>
-			<br><br>
+		<br><br>
+			
+                       
+		
+		<%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
+			
+			<div class="container">  
+				<div class="row">
+	        		<br>
+        			<div class="form-group">
+            			<div class="col-sm-12 col-md-12 col-lg-12">                
+                			<i class="fa fa-search fa-2x pull-left searchicon"></i><input type="search" class="form-control" id="search" placeholder="Filter Sets...">
+            			</div>
+       				</div>
+    			</div>      
+				<div class="row">
+					<% @sets.each do |set| %>
+						<div class="form-group">
+	            			<div class="items-collection">
+								<div class="items col-sm-2">
+				                    <div class="info-block block-info">
+				                        <div data-toggle="buttons" class="btn-group">
+				                            <label class="btn btn-secondary">
+				                                <div class="itemcontent">
+													<%=check_box_tag "set[]", set.id, nil %>
+													 <span class="fa fa-car fa-2x"></span>
+													 <i class="ss ss-<%=set.sdkID.downcase%> ss-2x"></i> 
+				                                    <h5>&nbsp;&nbsp;<%=set.sdkID%>&nbsp;&nbsp;</h5>
+				                                    <span class="hidden"><%=set.setName%></span>
+				                                </div>
+				                            </label>
+				                        </div>
+				                    </div>
+			                	</div>
+			            	</div>
+			        	</div>
+					<% end %>
+				</div>
+			</div>
+			<%= submit_tag "Search" %>
 		<%end%>
-		<%=check_box_tag "set[]", set.id, nil %><%=set.setName%>&nbsp;&nbsp;
 
-		<% i+=1
-		firstLetter = set.setName[0]
+	</main>
+	</body>
+</html>
 
-		%>
-	<% end %>
-
-	<%= submit_tag "Search" %>
-
-
-<%end%>
-
+<script>
+$(function () {
+    $('#search').on('keyup', function () {
+        var pattern = $(this).val();
+        $('.items-collection .items').hide();
+        $('.items-collection .items').filter(function () {
+            return $(this).text().match(new RegExp(pattern, 'i'));
+        }).show();
+    });
+});
+</script>
 
 
 

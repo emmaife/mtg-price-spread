@@ -1,0 +1,53 @@
+<center><h1>MTG Price Spread</h1></center>
+
+		<h5>Top Low Spread Standard Cards</h5>
+		<table border=".5" class="table-striped">
+			<tr>
+				<th>Card</th>
+
+				<th>TCG Mid</th>
+				<th>Card Kingdom</th>
+				<th>Spread</th>
+				
+			</tr>
+			<% 
+
+			@bestPosSpread.each do |x| 
+				foilTxt = ""
+				if x['isFoil'] 
+					foilTxt = " - FOIL "
+				end
+			%>
+				<tr>
+					<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+					<td><%=x["tcgPrice"]%></td>
+					<td><%=x["ckPrice"]%></td>
+					<td><%= x["spread"] %></td>
+				</tr>
+			<%
+			end
+			%>
+		</table>
+		<br><br>
+
+		<%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get' do%>
+			<%= label_tag(:q, "Search for:") %>
+			<%= text_field_tag(:q) %><br><br>
+			<% i = 0 %>
+			<%firstLetter = ""%>
+			<% @sets.each do |set| %>
+				<% if (set.setName[0] > firstLetter ||  set.setName == "Aether Revolt") && (i > 5 ) %>
+					<br><br>
+				<%end%>
+				<%=check_box_tag "set[]", set.id, nil %><%=set.setName%>&nbsp;&nbsp;
+
+				<% i+=1
+				firstLetter = set.setName[0]
+
+				%>
+			<% end %>
+
+			<%= submit_tag "Search" %>
+
+
+		<%end%>

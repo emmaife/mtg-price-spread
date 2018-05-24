@@ -13,15 +13,15 @@ class HomeController < ApplicationController
 
 
 	def index
-		@sets = MagicSet.all
+		@sets = MagicSet.where.not(sdkID: '')
   		if params[:q]
   			@cards = MTG::Card.where(name: params[:q]).all
   		else
 
     		@cards = MTG::Card.where(page: 1).where(pageSize: 20).all
   		end
-  		@negativeCards = MagicCard.where("spread < ?", 0)
-		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM'])
+  		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)[0..4]
+		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)[0..4]
 	end
 
 	def search
@@ -29,11 +29,10 @@ class HomeController < ApplicationController
 		@priceArr = Array.new
 		@results = Array.new
 		cardNames = Array.new
-		if params[:q] != ""
-    		@results = MagicCard.find_by(name: params[:q])
+		if params[:q] != "" && params[:q].present?
+    		@results = MagicCard.where('lower(name) like ?', "%#{params[:q].downcase}%").where.not(spread: nil).order(:spread)
 
 
-    	
 		else
 			params[:set].each do |k|
 				puts k.to_s + '---'
@@ -55,9 +54,9 @@ class HomeController < ApplicationController
 		end
 	end
 
-	def view_low_spread
-		negativeCards = MagicCard.where("spread < ?", 0)
-		bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM'])
+	def neg_spread
+		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)
+		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
 	end
 
 
