@@ -47,68 +47,70 @@
         	<h1>MTG Price Spread</h1>
         	
         </div>
-		<div class="row">
-	        <div class="col-6">
-	        	<h5>Top Low Spread Standard Cards</h5>
-				<table class="table table-striped table-bordered">
-					<tr>
-						<th>Card</th>
-
-						<th>TCG Mid</th>
-						<th>Card Kingdom</th>
-						<th>Spread</th>
-						
-					</tr>
-					<% 
-
-					@bestPosSpread.each do |x| 
-						foilTxt = ""
-						if x['isFoil'] 
-							foilTxt = " - FOIL "
-						end
-					%>
+        <div class="container">
+			<div class="row">
+		        <div class="col-6">
+		        	<h5>Top Low Spread Standard Cards</h5>
+					<table class="table table-striped table-bordered">
 						<tr>
-							<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
-							<td><%=x["tcgPrice"]%></td>
-							<td><%=x["ckPrice"]%></td>
-							<td><%= x["spread"] %></td>
+							<th>Card</th>
+
+							<th>TCG Mid</th>
+							<th>Card Kingdom</th>
+							<th>Spread</th>
+							
 						</tr>
-					<%
-					end
-					%>
-				</table>
-			</div>
-	        <div class="col-6">
-	        	<h5>Top Negative Spread Cards</h5>
-				<table class="table table-striped table-bordered">
-					<tr>
-						<th>Card</th>
+						<% 
 
-						<th>TCG Mid</th>
-						<th>Card Kingdom</th>
-						<th>Spread</th>
-						
-					</tr>
-					<% 
-
-					@negativeCards.each do |x| 
-						foilTxt = ""
-						if x['isFoil'] 
-							foilTxt = " - FOIL "
+						@bestPosSpread.each do |x| 
+							foilTxt = ""
+							if x['isFoil'] 
+								foilTxt = " - FOIL "
+							end
+						%>
+							<tr>
+								<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+								<td><%=x["tcgPrice"]%></td>
+								<td><%=x["ckPrice"]%></td>
+								<td><%= x["spread"] %></td>
+							</tr>
+						<%
 						end
-					%>
+						%>
+					</table>
+				</div>
+		        <div class="col-6">
+		        	<h5>Top Negative Spread Cards</h5>
+					<table class="table table-striped table-bordered">
 						<tr>
-							<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
-							<td><%=x["tcgPrice"]%></td>
-							<td><%=x["ckPrice"]%></td>
-							<td><%= x["spread"] %></td>
+							<th>Card</th>
+
+							<th>TCG Mid</th>
+							<th>Card Kingdom</th>
+							<th>Spread</th>
+							
 						</tr>
-					<%
-					end
-					%>
-				</table>
-	        </div>
-  		</div>
+						<% 
+
+						@negativeCards.each do |x| 
+							foilTxt = ""
+							if x['isFoil'] 
+								foilTxt = " - FOIL "
+							end
+						%>
+							<tr>
+								<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+								<td><%=x["tcgPrice"]%></td>
+								<td><%=x["ckPrice"]%></td>
+								<td><%= x["spread"] %></td>
+							</tr>
+						<%
+						end
+						%>
+					</table>
+		        </div>
+	  		</div>
+	  	</div>
 
 		
 		<br><br>
