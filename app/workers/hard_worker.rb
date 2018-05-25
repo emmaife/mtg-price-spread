@@ -35,7 +35,13 @@ class HardWorker
         MagicSet.all.each do |x|
             ckSetCode = x['ckID']
             sleep 1
-            page = Nokogiri::HTML(open("https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=" + ckSetCode.to_s))
+            if ckSetCode == 2984 || ckSetCode == 3044
+                url = "https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][5]=S&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=" + ckSetCode.to_s
+            else
+                url = "https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=" + ckSetCode.to_s
+            end
+
+            page = Nokogiri::HTML(open(url))
 
             page.css('div.itemContentWrapper').each do |result|
                 unless result.css('span.sellDollarAmount')[0].nil?

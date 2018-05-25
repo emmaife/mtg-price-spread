@@ -13,7 +13,7 @@ class HomeController < ApplicationController
 
 
 	def index
-		@sets = MagicSet.where.not(sdkID: '')
+		@sets = MagicSet.all
   		if params[:q]
   			@cards = MTG::Card.where(name: params[:q]).all
   		else

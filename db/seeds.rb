@@ -124,6 +124,7 @@ MagicSet.create([
 		{setName: 'Legions', tcgID: 66, ckID: 2555, sdkID: 'LGN' } ,
 		{setName: 'Lorwyn', tcgID: 67, ckID: 2560, sdkID: 'LRW' } ,
 		{setName: 'Magic Origins', tcgID: 1512, ckID: 2950, sdkID: 'ORI' } ,
+		{setName: 'Masterpiece Series: Amonkhet Invocations', tcgID: 1909, ckID: 3044, sdkID: 'MP2' } ,
 		{setName: 'Masterpiece Series: Kaladesh Inventions', tcgID: 1837, ckID: 2984, sdkID: 'MPS' } ,
 		{setName: 'Masters 25', tcgID: 2189, ckID: 3078, sdkID: 'A25' } ,
 		{setName: 'Mercadian Masques', tcgID: 73, ckID: 2565, sdkID: 'MMQ' } ,
