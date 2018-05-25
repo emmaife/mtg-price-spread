@@ -47,15 +47,12 @@
 				</tr>
 <% 
 			@negativeCards.each do |x| 
-				foilTxt = ""
-				if x['isFoil'] 
-					foilTxt = " - FOIL "
-				end
+				
 
 %>
 				<tr>
 		
-					<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+					<td><%=x['name'] %> <%if x['isFoil'] %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
 					<td><%=number_to_currency(x["tcgPrice"])%></td>
 					<td><%=number_to_currency(x["ckPrice"])%></td>
 					<td><%= number_to_percentage(x["spread"], precision: 2) %></td>

@@ -61,13 +61,10 @@
 						<% 
 
 						@bestPosSpread.each do |x| 
-							foilTxt = ""
-							if x['isFoil'] 
-								foilTxt = "✦"
-							end
+							
 						%>
 							<tr>
-								<td><%=x['name'] %> <%if foilTxt != "" %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
+								<td><%=x['name'] %> <%if x['isFoil'] %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
 								<td><%=x["tcgPrice"]%></td>
 								<td><%=x["ckPrice"]%></td>
 								<td><%= number_to_percentage(x["spread"], precision: 2) %></td>
@@ -97,7 +94,7 @@
 							end
 						%>
 							<tr>
-								<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
+								<td><%=x['name'] %> <%if x['isFoil'] %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
 								<td><%=number_to_currency(x["tcgPrice"])%></td>
 								<td><%=number_to_currency(x["ckPrice"])%></td>
 								<td><%= number_to_percentage(x["spread"], precision:2) %></td>
