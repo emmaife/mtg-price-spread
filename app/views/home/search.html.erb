@@ -68,9 +68,9 @@
 %>
 				<tr>
 					<td><%=x['name'] + foilTxt + ' ('+ x['set'] + ')' %> </td>
-					<td><%=x["tcgPrice"]%></td>
-					<td><%=x["ckPrice"]%></td>
-					<td><%= x["spread"] %></td>
+					<td><%=number_to_currency(x["tcgPrice"])%></td>
+					<td><%=number_to_currency(x["ckPrice"])%></td>
+					<td><%= number_to_percentage(x["spread"], precision: 2) %></td>
 				</tr>
 <%
 			end
