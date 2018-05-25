@@ -56,7 +56,10 @@ class HomeController < ApplicationController
 
 	def neg_spread
 		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)
-		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
+	end
+
+	def low_spread
+		@lowSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
 	end
 
 
