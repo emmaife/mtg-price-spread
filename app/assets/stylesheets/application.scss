@@ -12,6 +12,9 @@
  *
  */
  @import "bootstrap";
+ @import 'mana';
+ @import url('https://fonts.googleapis.com/css?family=Cinzel|Economica|IM+Fell+French+Canon+SC');
+
 
 body {
   padding-top: 5rem;
@@ -26,6 +29,18 @@ body {
 
 .searchicon {
     color:#5CB85C;
+}
+
+.navbar-brand {
+  font-family: 'Cinzel'
+}
+
+h1 {
+  font-family: 'Cinzel'
+}
+
+.nav-link {
+  font-family: 'Cinzel'
 }
 
 .items-collection{
