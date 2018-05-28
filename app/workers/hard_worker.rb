@@ -49,8 +49,11 @@ class HardWorker
                     foil =  result.css('div.foil').text.strip
                     price = result.css('span.sellDollarAmount')[0].text.strip + '.' + result.css('span.sellCentsAmount')[0].text.strip
                     price = price.to_f
-                    puts price
-                    puts newCardName
+                   
+                    if ckSetCode == 2984 || ckSetCode == 3044
+                         newCardName = newCardName.split(" (")[0]
+                     end
+
                     if foil != "FOIL"
                         m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
                         unless m.nil?
