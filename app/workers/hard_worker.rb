@@ -14,7 +14,7 @@ class HardWorker
                 url = URI("http://api.tcgplayer.com/pricing/product/" +  ERB::Util.url_encode(str))
                 http = Net::HTTP.new(url.host, url.port)
                 request = Net::HTTP::Get.new(url)
-                request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+                request['Authorization'] = "Bearer " + ENV['API_KEY']
                 response = http.request(request)
                 data = JSON.parse(response.body)
 
@@ -35,6 +35,7 @@ class HardWorker
         MagicSet.all.each do |x|
             ckSetCode = x['ckID']
             sleep 1
+            #masterpiece sets labeled as special on card kingdom
             if ckSetCode == 2984 || ckSetCode == 3044
                 url = "https://www.cardkingdom.com/purchasing/mtg_singles/?filter[sort]=name&filter[search]=mtg_advanced&filter[ipp]=500&filter[rarity][5]=S&filter[rarity][0]=M&filter[rarity][1]=R&filter[category_id]=" + ckSetCode.to_s
             else
@@ -51,21 +52,9 @@ class HardWorker
                     price = price.to_f
                    
                     if ckSetCode == 2984 || ckSetCode == 3044
-                         newCardName = newCardName.split(" (")[0]
-                     end
-
-                    if foil != "FOIL"
-                        m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
-                        unless m.nil?
-                            m.update_attribute(:ck_updated_on, Time.now)
-                            m.update_attribute(:ckPrice, price )
-                            unless m["tcgPrice"].nil?
-                                spread =  ((1 - (price/m["tcgPrice"]))*100)
-                                m.update_attribute(:spread, spread  ) 
-                             end
-                         end
-                  
-                    elsif foil == "FOIL"
+                        #bc masterpiece sets are all foil and name on card kingdom include original set in parentheses
+                        newCardName = newCardName.split(" (")[0]
+                      
                         f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
                         unless f.nil?
                             f.update_attribute(:ck_updated_on, Time.now) 
@@ -73,6 +62,29 @@ class HardWorker
                             unless f["tcgPrice"].nil?
                                 spread =  ((1 - (price/f["tcgPrice"]))*100)
                                 f.update_attribute(:spread, spread  ) 
+                            end
+                        end
+                    else
+                        if foil != "FOIL"
+                            m = MagicCard.find_by(name: newCardName, isFoil: false, set: x['sdkID'])
+                            unless m.nil?
+                                m.update_attribute(:ck_updated_on, Time.now)
+                                m.update_attribute(:ckPrice, price )
+                                unless m["tcgPrice"].nil?
+                                    spread =  ((1 - (price/m["tcgPrice"]))*100)
+                                    m.update_attribute(:spread, spread  ) 
+                                 end
+                             end
+                      
+                        elsif foil == "FOIL"
+                            f = MagicCard.find_by(name: newCardName, isFoil: true, set: x['sdkID'])
+                            unless f.nil?
+                                f.update_attribute(:ck_updated_on, Time.now) 
+                                f.update_attribute(:ckPrice, price ) 
+                                unless f["tcgPrice"].nil?
+                                    spread =  ((1 - (price/f["tcgPrice"]))*100)
+                                    f.update_attribute(:spread, spread  ) 
+                                end
                             end
                         end
                     end
@@ -91,7 +103,7 @@ class HardWorker
         #     url = URI("http://api.tcgplayer.com/pricing/product/" + x['productID'].to_s )
         #     http = Net::HTTP.new(url.host, url.port)
         #     request = Net::HTTP::Get.new(url)
-        #     request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+        #     request['Authorization'] = "Bearer " + ENV['API_KEY']
         #     response = http.request(request)
         #     data = JSON.parse(response.body)
         #     data['results'].each do |y|
@@ -118,7 +130,7 @@ class HardWorker
                 url = URI("http://api.tcgplayer.com/pricing/product/" +  ERB::Util.url_encode(str))
                 http = Net::HTTP.new(url.host, url.port)
                 request = Net::HTTP::Get.new(url)
-                request['Authorization'] = "Bearer 1OG2H2tTUKbtBOXa0hxEggt04PT2jBSvL6lELPAI499-Dj2UI9K7MnNAKRFstfdmertPNm84lqqRnn3t_7zwpS0yilsCMLAglh3Aui3PNVh8bBc0jAD7cfDC2_uI6gEMhoxdUKlzfcNcmGwk56_Cj5iYcNYAlDBwMqarMqPFmMsDYyVH8MjpH8l7aeDj0nXmJ4EfaOvCZARRQhVKvxOsHuqIWh9A-A-1p6joj8m6MRoTbZJROOAivaHe_Z27VTL-4pAd46J6Euxxyb7v1-hIM4b3K3A1Ml8KdY2JyebC063NF_sa97XFJOTbHzzyAkhMB3jzkPTNzdl1NrXObuNOJf4bajk"
+                request['Authorization'] = "Bearer " + ENV['API_KEY']
                 response = http.request(request)
                 data = JSON.parse(response.body)
                 data['results'].each do |x|
