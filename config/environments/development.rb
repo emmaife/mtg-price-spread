@@ -26,6 +26,12 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # Add the font path
+config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
+
+# Include font files to Assets
+config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
