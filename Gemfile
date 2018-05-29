@@ -24,7 +24,7 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'mtg_sdk'
 
-
+gem 'platform-api'
 gem 'simple_form'
 gem 'nokogiri'
 gem 'mechanize'
