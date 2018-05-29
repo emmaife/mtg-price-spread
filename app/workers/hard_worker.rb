@@ -17,7 +17,7 @@ class HardWorker
                 request['Authorization'] = "Bearer " + ENV['API_KEY']
                 response = http.request(request)
                 data = JSON.parse(response.body)
-                unless data['results'].nil?
+
                 data['results'].each do |y|
                     if y["subTypeName"] == "Normal"
                         c = MagicCard.find_by(productID: y['productId'])
