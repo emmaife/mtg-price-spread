@@ -58,12 +58,12 @@ class HomeController < ApplicationController
 		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)
 	end
 
-	def low_spread
-		@lowSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 21).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
+	def low_std_spread
+		@lowStdSpread = MagicCard.where("spread >= ?", 0).where("spread <= ?", 20).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
 	end
 
-	def one_percent
-		@onePercent = MagicCard.where("spread >= ?", 0).where("spread < ?", 1).order(:spread)
+	def low_spread
+		@lowSpread = MagicCard.where("spread >= ?", 0).where("spread <= ?", 20).order(:spread)
 	end
 
 

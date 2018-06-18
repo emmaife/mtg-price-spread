@@ -13,10 +13,10 @@
 		    	<a class="nav-link" href="/home/neg_spread">Negative Spreads </a>
 		  	</li>
 		  	<li class="nav-item <%=current_class(home_low_spread_path)%>">
-		    	<a class="nav-link" href="/home/low_spread">Lowest Standard Spreads</a>
+		    	<a class="nav-link" href="/home/low_spread">Lowest Spreads</a>
 		  	</li>
-		  	<li class="nav-item <%=current_class(home_one_percent_path)%>">
-		    	<a class="nav-link" href="/home/one_percent">Spreads Under 1 Percent</a>
+		  	<li class="nav-item <%=current_class(home_low_std_spread_path)%>">
+		    	<a class="nav-link" href="/home/low_std_spread">Lowest Standard Spreads</a>
 		  	</li>
 		</ul>
 		<%= form_tag url_for(:controller => 'home', :action => 'search'), :method => 'get', class: 'form-inline my-2 my-lg-0'  do%>

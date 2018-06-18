@@ -1,7 +1,6 @@
-
 <main role="main" class="container">
 	<div class="starter-template">
-		<h1>Lowest Standard Spreads</h1>
+		<h1>Lowest Spreads (all sets)</h1>
 	</div>
 	<table class="table table-striped table-bordered">
 		<tr>
@@ -11,16 +10,16 @@
 			<th scope="col">Spread</th>
 		</tr>
 		<% 
-			@lowSpread.each do |x| 	
+		@lowSpread.each do |x| 
 		%>
-				<tr>
-					<td><%=x['name']  %> <%if x['isFoil'] %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
-					<td><%=number_to_currency(x["tcgPrice"])%></td>
-					<td><%=number_to_currency(x["ckPrice"])%></td>
-					<td><%= number_to_percentage(x["spread"], precision: 2) %></td>
-				</tr>
+			<tr>
+				<td><%=x['name']  %> <%if x['isFoil'] %><span class="foil">✦</span><%end%><%= ' ('+ x['set'] + ')' %> </td>
+				<td><%=number_to_currency(x["tcgPrice"])%></td>
+				<td><%=number_to_currency(x["ckPrice"])%></td>
+				<td><%= number_to_percentage(x["spread"], precision: 2) %></td>
+			</tr>
 		<%
-			end
+		end
 		%>
 	</table>
 </main>
