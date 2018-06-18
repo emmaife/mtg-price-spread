@@ -59,7 +59,7 @@ class HomeController < ApplicationController
 	end
 
 	def low_spread
-		@lowSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
+		@lowSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 21).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)
 	end
 
 
