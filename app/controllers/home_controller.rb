@@ -21,7 +21,7 @@ class HomeController < ApplicationController
     		@cards = MTG::Card.where(page: 1).where(pageSize: 20).all
   		end
   		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)[0..4]
-		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 16).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)[0..4]
+		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 21).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)[0..4]
 	end
 
 	def search
