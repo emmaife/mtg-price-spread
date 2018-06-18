@@ -1,7 +1,10 @@
 module ApplicationHelper
 
-	def current_class?(test_path)
-    	return 'active' if request.path == test_path
+	def current_class(path)
+    	return 'active' if current_page?(path) 
     	''
 	end
+
+	
+
 end
