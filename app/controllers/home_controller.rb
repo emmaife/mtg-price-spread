@@ -5,14 +5,15 @@ class HomeController < ApplicationController
 	require 'net/http'
 	require 'cgi'
 
-	helper_method :get_other_prices
-	helper_method :get_tcg_price
-	helper_method :get_cf_prices
-	helper_method :get_ck_prices
+	helper_method :get_std
+	
+
+	
 
 
 
 	def index
+		get_std
 		@sets = MagicSet.all.order(:sdkID)
   		if params[:q]
   			@cards = MTG::Card.where(name: params[:q]).all
@@ -21,7 +22,7 @@ class HomeController < ApplicationController
     		@cards = MTG::Card.where(page: 1).where(pageSize: 20).all
   		end
   		@negativeCards = MagicCard.where("spread < ?", 0).order(:spread)[0..4]
-		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 21).where(set: ['KLD', 'AER', 'AKH', 'W17','HOU', 'XLN', 'RIX', 'DOM']).order(:spread)[0..4]
+		@bestPosSpread = MagicCard.where("spread >= ?", 0).where("spread < ?", 21).where(set: @stdArr).order(:spread)[0..4]
 	end
 
 	def search
