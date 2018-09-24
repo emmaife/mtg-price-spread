@@ -26,12 +26,30 @@ body {
     width:90%;
 }
 
+
+
 .searchicon {
     color:#5CB85C;
 }
 
 .navbar-brand {
   font-family: 'Cinzel'
+}
+
+.img-nav {
+    width: 70px;
+    margin-left: 30px;
+    margin-top: -15px;
+}
+
+.btn-test {
+  border-color: #0f90ff !important;
+  color: #0f90ff !important;
+}
+
+.btn-test:hover {
+  background-color: #84b5e0cc !important;
+  border-color: #0f90ff !important;
 }
 
 h1 {
