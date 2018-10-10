@@ -19,3 +19,15 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+secrets.yml
+/.bundle
+/db/*.sqlite3
+/log/*.log
+/tmp
+config/database.yml
+config/google_analytics.yml
+.DS_Store
+/nbproject/
+public/assets/**
+database.yml
