@@ -62,7 +62,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.0.5)
+    concurrent-ruby (1.1.5)
     connection_pool (2.2.1)
     crass (1.0.4)
     declarative (0.0.10)
@@ -150,7 +150,7 @@ GEM
       moneta (~> 0.8.1)
     popper_js (1.12.9)
     puma (3.11.4)
-    rack (2.0.5)
+    rack (2.0.7)
     rack-protection (2.0.1)
       rack
     rack-test (0.6.3)
@@ -217,7 +217,7 @@ GEM
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
       spring (>= 1.2, < 3.0)
-    sprockets (3.7.1)
+    sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
